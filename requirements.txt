@@ -3,3 +3,4 @@ beautifulsoup4
 qdrant-client
 sentence-transformers
 dotenv
+logfire

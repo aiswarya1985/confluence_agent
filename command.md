@@ -29,6 +29,40 @@ git push -u origin main
 
 uv pip install -r requirements.txt
 
+### to push all files that has changed
+git add .
+
+### commit with relevant message
+
+git commit -m "first commit"
+
+### push
+git push
+
+### configure logfire
+
+create a project in logfire
+create a write token 
+uv pip install logfire
+python -m logfire auth
+python -m logfire projects use ## link the project
+.logfire will be created
+
+do logfire.configure to use in project
+
+## to convert to packages
+
+uv pip install -e .
+
+### run seperate files
+
+change to the directory where file is loacted
+
+uv run --active confluence_loader.py
+
+
+
+
 
 
 
