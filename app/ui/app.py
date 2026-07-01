@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- PAGE SETUP ---
-st.set_page_config(page_title="Confluence RAG Assistant", page_icon="🤖")
+st.set_page_config(page_title="Confluence0 RAG Assistant", page_icon="🤖")
 st.title("🤖 Confluence Agentic Assistant")
 
 # --- SESSION STATE ---
