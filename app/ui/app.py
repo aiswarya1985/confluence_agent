@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- PAGE SETUP ---
-st.set_page_config(page_title="Simple RAG Assistant", page_icon="🤖")
-st.title("🤖 Enterprise Agentic Assistant")
+st.set_page_config(page_title="Confluence RAG Assistant", page_icon="🤖")
+st.title("🤖 Confluence Agentic Assistant")
 
 # --- SESSION STATE ---
 if "session_id" not in st.session_state:
@@ -35,7 +35,7 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # --- USER INPUT & BACKEND CALL ---
-if prompt := st.chat_input("Ask about your documentation..."):
+if prompt := st.chat_input("Ask about confluence documentation..."):
     # 1. Append and render user message
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar="👤"):
