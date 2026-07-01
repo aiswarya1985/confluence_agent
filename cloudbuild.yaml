@@ -1,0 +1,5 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/confluenceagent/confluenceagent/confluenceagent-api:v1', '-f', 'docker/Dockerfile', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/confluenceagent/confluenceagent/confluenceagent-api:v1']

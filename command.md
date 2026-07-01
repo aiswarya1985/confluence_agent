@@ -58,7 +58,7 @@ uv pip install -e .
 
 change to the directory where file is loacted
 
-### just for testing
+### just for ingestion testing
 uv run --active confluence_loader.py
 
 ## 4. Running Locally
