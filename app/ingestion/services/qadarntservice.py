@@ -1,5 +1,6 @@
 import uuid
 import numpy as np
+import logfire
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
@@ -15,8 +16,9 @@ qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
 
 encoder = SentenceTransformer('all-MiniLM-L6-v2') 
 
+with logfire.span("qdarnt service started"):
 # Initialize Collection
-if not qdrant_client.collection_exists(COLLECTION_NAME):
+ if not qdrant_client.collection_exists(COLLECTION_NAME):
     print(f"Creating collection: {COLLECTION_NAME}")
     qdrant_client.create_collection(
         collection_name=COLLECTION_NAME,
@@ -33,6 +35,12 @@ def get_text_embedding(text: str) -> np.ndarray:
         
     # Directly uses the 'encoder' variable initialized outside the function
     embedding = encoder.encode(text, convert_to_numpy=True)
+    logfire.info("embedding generated successfully.",embedding=embedding.tolist())
+    logfire.info(
+    "Generated embedding of length {length} for text: {sample}...", 
+    length=len(embedding), 
+    sample=text[:30]
+   )
     return embedding
 
 # ==========================================
@@ -62,8 +70,7 @@ def push_to_qdrant(text_chunks, page_id, title):
                 "text": chunk
             }
         )
-        points.append(point)
-        GLOBAL_POINT_ID += 1
+        points.append(point)       
         
     # 3. Batch upload points to the cluster
     if points:
@@ -81,24 +88,26 @@ def search_enterprise_knowledge(query: str, limit: int = 8):
     """
     try:
         query_vector = get_text_embedding(query)
+        logfire.info("Query vector generated successfully", vector_dimensions=len(query_vector))
 
         # Using query_points - the modern standard for Qdrant
         response = qdrant_client.query_points(
-            collection_name=settings.QDRANT_COLLECTION,
+            collection_name=COLLECTION_NAME,
             query=query_vector,
             limit=limit,
             with_payload=True # JSON
         )
+        logfire.info(f"Qdrant search returned {len(response.points)} results for query: '{query}'")
 
         results = []
         for res in response.points:
             results.append({
                 "content": res.payload.get("text", ""),
-                "source": res.payload.get("source", "Unknown"),
+                "source": res.payload.get("title", "Unknown"),
                 "score": res.score
             })
         
         return results
     except Exception as e:
-        print(f"❌ Qdrant Search Failed: {e}")
+        logfire.error("Qdrant Search Failed", error=str(e))
         return []

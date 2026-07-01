@@ -58,7 +58,22 @@ uv pip install -e .
 
 change to the directory where file is loacted
 
+### just for testing
 uv run --active confluence_loader.py
+
+## 4. Running Locally
+
+### Start the FastAPI Backend
+```powershell
+uvicorn app.main:app --reload --port 8000
+```
+
+### Start the Streamlit UI
+```powershell
+streamlit run ui/app.py
+```
+
+
 
 
 

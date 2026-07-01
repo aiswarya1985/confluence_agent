@@ -10,13 +10,14 @@ llm = ChatGroq(
     model=settings.GROQ_MODEL,
     temperature=0.1
 )
+with logfire.span("🧠 Planner Decision"):
 
-
-def generate_node(state: AgentState):
+ def generate_node(state: AgentState):
     """
     Synthesizes a response using both Documentation Context AND Conversation History.
     """
     query = state["current_query"]
+    logfire.info(f"Generating response for query type: {query}")
     
     # Format the entire history for the LLM
     history_str = ""

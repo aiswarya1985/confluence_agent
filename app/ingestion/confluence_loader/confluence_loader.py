@@ -12,6 +12,8 @@ CONFLUENCE_EMAIL = settings.CONFLUENCE_EMAIL
 CONFLUENCE_TOKEN = settings.CONFLUENCE_TOKEN
 SPACE_KEY = settings.SPACE_KEY
 
+logfire.configure()
+
 with logfire.span("loading of pages from confluence started"):
 
   confluence = Confluence(url=CONFLUENCE_URL, username=CONFLUENCE_EMAIL, password=CONFLUENCE_TOKEN)
