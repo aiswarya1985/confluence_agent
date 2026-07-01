@@ -1,3 +1,6 @@
+import uuid
+import numpy as np
+
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 from sentence_transformers import SentenceTransformer
@@ -20,8 +23,17 @@ if not qdrant_client.collection_exists(COLLECTION_NAME):
         vectors_config=VectorParams(size=384, distance=Distance.COSINE)
     )
 
-# Global counter to ensure every single point pushed across all documents has a unique ID
-GLOBAL_POINT_ID = 1
+def get_text_embedding(text: str) -> np.ndarray:
+    """
+    Generates a dense vector embedding for a single text string 
+    using the global encoder instance.
+    """
+    if not text.strip():
+        raise ValueError("Input text cannot be empty or whitespace.")
+        
+    # Directly uses the 'encoder' variable initialized outside the function
+    embedding = encoder.encode(text, convert_to_numpy=True)
+    return embedding
 
 # ==========================================
 # 2. SEPARATE QDRANT PUSH FUNCTION
@@ -31,16 +43,17 @@ def push_to_qdrant(text_chunks, page_id, title):
     Takes a list of text chunks, generates embeddings, 
     constructs Qdrant points, and pushes them to the cluster.
     """
-    global GLOBAL_POINT_ID
+   
     points = []
     
     for index, chunk in enumerate(text_chunks):
         # 1. Convert text to numerical coordinates
         vector = encoder.encode(chunk).tolist()
+        string_id = str(uuid.uuid4())
         
         # 2. Build the structured data point
         point = PointStruct(
-            id=GLOBAL_POINT_ID,
+            id=string_id,
             vector=vector,
             payload={
                 "page_id": page_id,
