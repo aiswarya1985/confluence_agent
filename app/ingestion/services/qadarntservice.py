@@ -73,3 +73,32 @@ def push_to_qdrant(text_chunks, page_id, title):
         )
         return response
     return None
+
+def search_enterprise_knowledge(query: str, limit: int = 8):
+    """
+    Performs a high-precision search in the enterprise knowledge base.
+    Uses the modern query_points interface.
+    """
+    try:
+        query_vector = get_text_embedding(query)
+
+        # Using query_points - the modern standard for Qdrant
+        response = qdrant_client.query_points(
+            collection_name=settings.QDRANT_COLLECTION,
+            query=query_vector,
+            limit=limit,
+            with_payload=True # JSON
+        )
+
+        results = []
+        for res in response.points:
+            results.append({
+                "content": res.payload.get("text", ""),
+                "source": res.payload.get("source", "Unknown"),
+                "score": res.score
+            })
+        
+        return results
+    except Exception as e:
+        print(f"❌ Qdrant Search Failed: {e}")
+        return []

@@ -6,3 +6,4 @@ dotenv
 logfire
 langchain_groq
 flashrank
+langgraph
