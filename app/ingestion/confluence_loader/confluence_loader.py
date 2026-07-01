@@ -6,8 +6,6 @@ from atlassian import Confluence
 from app.ingestion.chunking.chunktext import chunk_text
 from app.ingestion.services.qadarntservice import push_to_qdrant
 
-logfire.configure()
-
 
 CONFLUENCE_URL = settings.CONFLUENCE_URL
 CONFLUENCE_EMAIL = settings.CONFLUENCE_EMAIL

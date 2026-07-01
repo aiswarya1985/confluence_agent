@@ -7,3 +7,4 @@ logfire
 langchain_groq
 flashrank
 langgraph
+fastapi
