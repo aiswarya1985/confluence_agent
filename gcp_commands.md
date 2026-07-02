@@ -189,9 +189,22 @@ gcloud projects add-iam-policy-binding confluenceagent \
 	
 gcloud builds submit --tag us-central1-docker.pkg.dev/confluenceagent/confluenceagent/confluenceagent-api:v1 "$(pwd)"
 
-create cloudbuild.yaml
+#### check the service account where cloud build is building
 
-run gcloud builds submit --config cloudbuild.yaml .
+gcloud builds get-default-service-account --project=confluenceagent
+
+
+### give permission to artifcat repository
+
+gcloud artifacts repositories add-iam-policy-binding confluenceagent \
+    --project=confluenceagent \
+    --location=us-central1 \
+    --member="serviceAccount:17897045860-compute@developer.gserviceaccount.com" \
+    --role="roles/artifactregistry.writer"
+
+#### create cloudbuild.yaml
+
+gcloud builds submit --config cloudbuild.yaml .
 	
 	
 
