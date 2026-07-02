@@ -18,10 +18,10 @@ COPY . .
 
 # Set Environment Variables
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8080
 
-# Cloud Run uses the PORT env var
+# Cloud Run routes traffic here
 EXPOSE 8080
 
-# Start the FastAPI application
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Start the FastAPI application 
+# Using shell format allows $PORT to be evaluated dynamically by Cloud Run
+CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT

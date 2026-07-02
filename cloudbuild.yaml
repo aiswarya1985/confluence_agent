@@ -1,5 +1,23 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/confluenceagent/confluenceagent/confluenceagent-api:v1', '-f', 'docker/Dockerfile', '.']
+
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/confluenceagent/confluenceagent/confluenceagent-api:v1']
+
+# This step automatically updates Cloud Run with the new image and variables
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args:
+    - 'run'
+    - 'deploy'
+    - 'confluenceagent-api'
+    - '--image=us-central1-docker.pkg.dev/confluenceagent/confluenceagent/confluenceagent-api:v1'
+    - '--region=us-central1'
+    - '--platform=managed'
+    - '--allow-unauthenticated'
+    - '--memory=2Gi'
+    - '--timeout=300'
+    - '--vpc-connector=confluence-vps'
+    - '--project=confluenceagent'
+    

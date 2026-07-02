@@ -194,6 +194,7 @@ gcloud builds submit --tag us-central1-docker.pkg.dev/confluenceagent/confluence
 gcloud builds get-default-service-account --project=confluenceagent
 
 
+
 ### give permission to artifcat repository
 
 gcloud artifacts repositories add-iam-policy-binding confluenceagent \
@@ -252,4 +253,8 @@ gcloud run deploy rag-api \
 ### steps to paste in gitbash without error
 remove \ by replacing
 open gitbash and paste
+
+### check logs if deploy failed
+
+gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=confluenceagent-api" --limit=20 --project=confluenceagent --format="table(textPayload)"
 
